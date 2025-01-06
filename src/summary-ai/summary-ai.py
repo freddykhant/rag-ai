@@ -4,6 +4,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import SKLearnVectorStore
 from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
+import json
 
 from state import SummaryState
 from prompts import summary_prompt, router_instructions
@@ -74,3 +75,12 @@ def route_question(state):
     [SystemMessage(content=router_instructions)]
     + HumanMessage(content=state["question"])
   )
+
+  source = json.loads(route.content)["datasource"]
+  if source == "generalinfo":
+    print("Routing to general information...\n")
+    return "generalinfo"
+  elif source == "vectorstore":
+    print("Routing to vectorstore...\n")
+    return "vectorstore"
+  
