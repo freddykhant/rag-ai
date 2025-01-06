@@ -1,0 +1,9 @@
+langchain
+langchain-ollama
+langchain-core
+langchain_community
+langchain-nomic
+tiktoken
+scikit-learn
+nomic[local]
+langgraph
