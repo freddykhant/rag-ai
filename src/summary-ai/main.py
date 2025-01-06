@@ -5,9 +5,11 @@ from langchain_community.vectorstores import SKLearnVectorStore
 from langchain_nomic.embeddings import NomicEmbeddings
 from langchain_core.messages import HumanMessage
 from prompts import summary_prompt 
+
 # load LLM model
 local_llm = "llama3.2:3b"
 llm = ChatOllama(model=local_llm, temperature=0)
+llm_json_mode = ChatOllama(model=local_llm, temperature=0, mode="json")
 
 # vector store
 files = [
