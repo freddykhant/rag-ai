@@ -74,11 +74,13 @@ graph = builder.compile()
 
 # test graph
 
-# input = SummaryState(
-#   topic = "Sales" 
-# )
-# summary = graph.invoke(input)
+# inputs = {"topic": "sales"}
+# for event in graph.stream(inputs, stream_mode="values"):
+#   print(event)
 
-inputs = {"topic": "Sales"}
-for event in graph.stream(inputs, stream_mode="values"):
-  print(event)
+input = SummaryState(
+  topic = "Sales"
+)
+summary = graph.invoke(input)
+
+print(summary["generation"])

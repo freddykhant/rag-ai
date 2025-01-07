@@ -2,12 +2,10 @@ import operator
 from typing_extensions import TypedDict, Annotated, List
 from dataclasses import dataclass, field
 
+@dataclass(kw_only=True)
 class SummaryState(TypedDict):
-  topic : str 
-  generation: str 
-  query: str 
-  loop_step: Annotated[int, operator.add] 
-  documents: List[str] 
-
-class SummaryStateInput(TypedDict):
-  topic : str 
+  topic : str = field(default=None)
+  generation: str = field(default=None)
+  query: str = field(default=None)
+  loop_step: Annotated[int, operator.add] = field(default_factory=list)
+  documents: List[str] = field(default_factory=list)
