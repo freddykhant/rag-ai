@@ -14,15 +14,14 @@ llm_json_mode = ChatOllama(model=local_llm, temperature=0, mode="json")
 def format_docs(docs):
   return "\n\n".join([doc.page_content for doc in docs])
 
+# node methods
+
 def retrieve(state):
   print("Retrieving documents...\n")
   question = state["question"]
 
   documents = state["documents"]
   return {"documents": documents}
-
-def format_docs(docs):
-  return "\n\n".join([doc.page_content for doc in docs])
 
 def generate(state):
   print("Generating summary...\n")
@@ -33,7 +32,7 @@ def generate(state):
   docs_txt = format_docs(documents)
   summary_prompt_formatted = summary_prompt.format(context=docs_txt, question=question)
   generation = llm.invoke([HumanMessage(content = summary_prompt_formatted)])
-  return {"generation": generation.content}
+  return {"generation": generation.content, "loop_step": loop_step + 1}
 
 def route_question(state):
   print("Routing question...\n")  
@@ -52,5 +51,24 @@ def route_question(state):
   
 ### Create Graph ###
 
-
 builder = StateGraph(SummaryState)
+
+
+# add nodes
+builder.add_node("route_question", route_question)  
+builder.add_node("retrieve", retrieve)
+builder.add_node("generate", generate)
+
+# add edges
+builder.add_edge(START, "route_question")
+builder.add_conditional_edges(
+  "route_question", 
+  {
+    "generalinfo": "generate",
+    "vectorstore": "retrieve"
+  }
+)
+builder.add_edge("retrieve", "generate")
+builder.add_edge("generate", END)
+
+graph = builder.compile()
