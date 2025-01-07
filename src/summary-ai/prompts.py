@@ -4,6 +4,9 @@ Here is the dataset to analyze and summarize:
 
 {context}
 
+Here is the topic you need to summarize and make analysis on:
+{topic}
+
 Your task:
 1. Provide a concise summary of key trends, significant values, or patterns observed in the data.
 2. Highlight any notable details, such as outliers or frequent values.

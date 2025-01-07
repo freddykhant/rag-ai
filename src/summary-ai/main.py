@@ -44,11 +44,3 @@ retriever = vectorstore.as_retriever(k=k)
 # helper method to format documents
 def format_docs(docs):
   return "\n\n".join([doc.page_content for doc in docs])
-
-question = "What is the total sales for Coffee Heaven?"
-docs = retriever.invoke(question)
-docs_txt = format_docs(docs)
-rag_prompt_formatted = summary_prompt.format(context=docs_txt, question=question)
-generation = llm.invoke([HumanMessage(content=rag_prompt_formatted)])
-print("\n")
-print(generation.content)

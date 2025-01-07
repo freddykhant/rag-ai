@@ -60,9 +60,8 @@ builder.add_node("retrieve", retrieve)
 builder.add_node("generate", generate)
 
 # add edges
-builder.add_edge(START, "route_question")
-builder.add_conditional_edges(
-  "route_question", 
+builder.set_conditional_entry_point(
+  route_question,
   {
     "generalinfo": "generate",
     "vectorstore": "retrieve"
