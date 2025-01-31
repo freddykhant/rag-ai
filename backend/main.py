@@ -1,60 +1,66 @@
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage
 from langgraph.graph import START, END, StateGraph
-import json
 from state import SummaryState
 from prompts import summary_prompt, answer_prompt
 from vectordb import retriever
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import os
+import logging
 
-# LLM
+# Initialise Flask
+app = Flask(__name__)
+CORS(app)
+
+# LLM setup
 local_llm = "llama3.2:3b"
 llm = ChatOllama(model=local_llm, temperature=0)
-llm_json_mode = ChatOllama(model=local_llm, temperature=0, mode="json") 
 
-# helper method to format documents
+# Helper function to format documents
 def format_docs(docs):
-  return "\n\n".join([doc.page_content for doc in docs])
+    return "\n\n".join([doc.page_content for doc in docs])
 
-# node methods
-
+# Define Graph Nodes
 def retrieve(state):
-  print("Retrieving documents...\n")
-  topic = state["topic"]
-
-  documents = retriever.invoke(topic)
-  return {"documents": documents}
+    topic = state["topic"]
+    documents = retriever.invoke(topic)
+    return {"documents": documents}
 
 def generate(state):
-  print("Generating summary...\n")
-  topic = state["topic"]
-  documents = state["documents"]
-  loop_step = state.get("loop_step", 0)
+    topic = state["topic"]
+    documents = state["documents"]
+    docs_txt = format_docs(documents)
 
-  docs_txt = format_docs(documents)
-  summary_prompt_formatted = summary_prompt.format(context=docs_txt, topic=topic)
-  generation = llm.invoke([HumanMessage(content = summary_prompt_formatted)])
-  return {"generation": generation.content, "loop_step": loop_step + 1}
-  
-### Create Graph ###
+    summary_prompt_formatted = summary_prompt.format(context=docs_txt, topic=topic)
+    generation = llm.invoke([HumanMessage(content=summary_prompt_formatted)])
+    
+    return {"generation": generation.content}
 
+# Build LangGraph Workflow
 builder = StateGraph(SummaryState)
-
-# add nodes
 builder.add_node("retrieve", retrieve)
 builder.add_node("generate", generate)
-
-# add edges
 builder.add_edge(START, "retrieve")
 builder.add_edge("retrieve", "generate")
 builder.add_edge("generate", END)
 
 graph = builder.compile()
 
-# test run
+# API Route
+@app.route("/summarize", methods=["POST"])
+def summarize():
+    data = request.get_json()
+    topic = data.get("topic")
 
-input = SummaryState(
-  topic = "What is the total sales amount for Coffee Heaven?"
-)
-summary = graph.invoke(input)
+    if not topic:
+        return jsonify({"error": "Missing topic"}), 400
 
-print(summary["generation"])
+    input_state = SummaryState(topic=topic)
+    result = graph.invoke(input_state)
+
+    return jsonify({"summary": result["generation"]})
+
+# Run Flask Server
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
