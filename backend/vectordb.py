@@ -1,7 +1,10 @@
 from langchain_community.document_loaders import CSVLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import SKLearnVectorStore
+from langchain_chroma import Chroma
 from langchain_nomic.embeddings import NomicEmbeddings  
+
+# embeddings model setup
+embeddings = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
 
 # vector store
 files = [
@@ -17,18 +20,23 @@ for file in files:
   docs += loader.load()
 
 # split documents
-text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-  chunk_size=1000, chunk_overlap=200
+text_splitter = RecursiveCharacterTextSplitter(
+  chunk_size=1024, chunk_overlap=200, length_function=len
 )
 
 doc_splits = text_splitter.split_documents(docs)
 
 # add to vector database
-vectorstore = SKLearnVectorStore.from_documents(
+vectorstore = Chroma.from_documents(
   documents=doc_splits,
-  embedding=NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
+  embedding=embeddings
 )
+
+vectorstore.persist()
 
 # create retriever
 k = min(3, len(doc_splits)) # ensure k does not exceed available chunks
-retriever = vectorstore.as_retriever(k=k)
+retriever = vectorstore.as_retriever(
+            search_type="similarity_score_threshold",
+            search_kwargs={"k": k, "score_threshold": 0.1},
+        )
