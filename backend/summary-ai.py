@@ -3,7 +3,7 @@ from langchain_core.messages import HumanMessage
 from langgraph.graph import START, END, StateGraph
 import json
 from state import SummaryState
-from prompts import summary_prompt
+from prompts import summary_prompt, answer_prompt
 from vectordb import retriever
 
 # LLM
@@ -53,7 +53,7 @@ graph = builder.compile()
 # test run
 
 input = SummaryState(
-  topic = "Sales"
+  topic = "What is the total sales amount for Coffee Heaven?"
 )
 summary = graph.invoke(input)
 
