@@ -9,3 +9,4 @@ langchain
 langchain_ollama
 langchain_chroma
 flask_cors
+nomic[local]

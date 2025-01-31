@@ -32,8 +32,6 @@ vectorstore = Chroma.from_documents(
   embedding=embeddings
 )
 
-vectorstore.persist()
-
 # create retriever
 k = min(3, len(doc_splits)) # ensure k does not exceed available chunks
 retriever = vectorstore.as_retriever(
