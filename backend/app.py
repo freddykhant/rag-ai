@@ -4,7 +4,7 @@ import logging
 import os
 from langchain_community.document_loaders import CSVLoader
 from langchain_chroma import Chroma
-from rag import llm, embeddings, text_splitter
+from rag import llm, embeddings, text_splitter, SummaryState, graph
 
 # Initialise Flask
 app = Flask(__name__)
@@ -62,6 +62,28 @@ def upload():
     except Exception as e:
         logger.error(f"Error uploading file: {e}")
         return jsonify({"error": "Failed to upload file"}), 500
+    
+# Summary Route
+@app.route("/summary", methods=["POST"])
+def summary():
+    data = request.json
+    filename = data.get("filename")
+
+    if not filename:
+        return jsonify({"error": "Filename is required"}), 400
+
+    logger.info(f"Filename received: {filename}")
+
+    try:
+        input_state = SummaryState(filename=filename)
+        result = graph.invoke(input_state)
+        summary_text = result.get("generation", "No summary generated.")
+
+        return jsonify({"summary": summary_text}), 200
+
+    except Exception as e:
+        logger.error(f"Error in summarization: {e}")
+        return jsonify({"error": "Failed to generate summary"}), 500
 
 # Run Flask Server
 if __name__ == "__main__":
