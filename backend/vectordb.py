@@ -8,9 +8,9 @@ embeddings = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="loca
 
 # vector store
 files = [
-  "data/coffee_heaven_sales.csv",
-  "data/tech_emporium_sales.csv",
-  "data/green_grocers_sales.csv"
+  "files/coffee_heaven_sales.csv",
+  "files/tech_emporium_sales.csv",
+  "files/green_grocers_sales.csv"
 ]
 
 # load documents
@@ -29,7 +29,8 @@ doc_splits = text_splitter.split_documents(docs)
 # add to vector database
 vectorstore = Chroma.from_documents(
   documents=doc_splits,
-  embedding=embeddings
+  embedding=embeddings,
+  persist_directory="db",
 )
 
 # create retriever

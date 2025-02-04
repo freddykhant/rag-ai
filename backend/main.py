@@ -14,8 +14,13 @@ app = Flask(__name__)
 CORS(app)
 
 # LLM setup
-local_llm = "llama3.2:3b"
+local_llm = "llama3.1:8b"
 llm = ChatOllama(model=local_llm, temperature=0)
+
+# ensure necessary directories exist
+folder_path = "db"
+if not os.path.exists("files"):
+    os.makedirs("files")
 
 # Helper function to format documents
 def format_docs(docs):
