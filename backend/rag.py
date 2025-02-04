@@ -7,6 +7,8 @@ from langgraph.graph import START, END, StateGraph
 from state import SummaryState
 from langchain_community.document_loaders import CSVLoader
 from langchain_chroma import Chroma
+from typing_extensions import TypedDict, List
+from dataclasses import dataclass, field
 
 # LLM setup
 local_llm = "llama3.1:8b"
@@ -15,33 +17,10 @@ llm = ChatOllama(model=local_llm, temperature=0)
 # Embeddings model setup
 embeddings = NomicEmbeddings(model="nomic-embed-text-v1.5", inference_mode="local")
 
-# files = [
-#   "files/coffee_heaven_sales.csv",
-# ]
-
-# docs = []
-# for file in files:
-#   loader = CSVLoader(file)
-#   docs += loader.load()
-
 # Text Splitter
 text_splitter = RecursiveCharacterTextSplitter(
   chunk_size=1024, chunk_overlap=200, length_function=len
 )
-
-# chunks = text_splitter.split_documents(docs)
-
-# vectorstore = Chroma.from_documents(
-#     documents=chunks,
-#     embedding=embeddings,
-#     persist_directory="db",
-#     )
-
-# k = min(3, len(chunks)) # ensure k does not exceed available chunks
-# retriever = vectorstore.as_retriever(
-#             search_type="similarity_score_threshold",
-#             search_kwargs={"k": k, "score_threshold": 0.1},
-#         )
 
 summary_prompt = PromptTemplate.from_template(
     """
@@ -71,7 +50,15 @@ def format_docs(docs):
 # Define Graph Nodes
 def retrieve(state):
     filename = state["filename"]
-    documents = retriever.invoke(filename)
+    # Load the vector store
+    vectorstore = Chroma(persist_directory="db", embedding_function=embeddings)
+    # Create retriever
+    retriever = vectorstore.as_retriever(
+        search_type="similarity_score_threshold",
+        search_kwargs={"k": 20, "score_threshold": 0.1},
+    )
+    # Retrieve documents
+    documents = retriever.get_relevant_documents(filename)
     return {"documents": documents}
 
 def generate(state):
@@ -83,6 +70,13 @@ def generate(state):
     generation = llm.invoke([HumanMessage(content=summary_prompt_formatted)])
     
     return {"generation": generation.content}
+
+# State Definition
+@dataclass(kw_only=True)
+class SummaryState(TypedDict):
+  filename : str = field(default=None)
+  generation: str = field(default=None)
+  documents: List[str] = field(default_factory=list)
 
 # Build LangGraph Workflow
 builder = StateGraph(SummaryState)

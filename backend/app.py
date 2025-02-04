@@ -4,6 +4,7 @@ import logging
 import os
 from langchain_community.document_loaders import CSVLoader
 from langchain_chroma import Chroma
+from rag import llm, embeddings, text_splitter
 
 # Initialise Flask
 app = Flask(__name__)
