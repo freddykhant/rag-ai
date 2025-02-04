@@ -9,18 +9,22 @@ from flask_cors import CORS
 import os
 import logging
 
-## Initialise Flask
-# app = Flask(__name__)
-# CORS(app)
+# Initialise Flask
+app = Flask(__name__)
+CORS(app)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # LLM setup
 local_llm = "llama3.1:8b"
 llm = ChatOllama(model=local_llm, temperature=0)
 
-## ensure necessary directories exist
-# folder_path = "db"
-# if not os.path.exists("files"):
-#     os.makedirs("files")
+# ensure necessary directories exist
+folder_path = "db"
+if not os.path.exists("files"):
+    os.makedirs("files")
 
 # Helper function to format documents
 def format_docs(docs):
@@ -52,25 +56,37 @@ builder.add_edge("generate", END)
 
 graph = builder.compile()
 
-# API Route
-# @app.route("/summarize", methods=["POST"])
-# def summarize():
-#     data = request.get_json()
-#     filename = data.get("filename")
+## API Routes 
 
-#     if not filename:
-#         return jsonify({"error": "Missing filename"}), 400
+# Health Check Route
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"})
 
-#     input_state = SummaryState(filename=filename)
-#     result = graph.invoke(input_state)
+# Summary Route
+@app.route("/summarize", methods=["POST"])
+def summarize():
+    data = request.get_json()
+    filename = data.get("filename")
 
-#     return jsonify({"summary": result["generation"]})
+    if not filename:
+        return jsonify({"error": "Missing filename"}), 400
 
-# # Run Flask Server
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=5000)
+    input_state = SummaryState(filename=filename)
+    result = graph.invoke(input_state)
 
-# test code for workflow
-input = SummaryState(filename="green_grocers_sales.csv")
-answer = graph.invoke(input)
-print(answer["generation"]) 
+    return jsonify({"summary": result["generation"]})
+
+
+
+
+# Run Flask Server
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+### TEST CODE FOR SUMMARY AI RAG PIPELINE, DO NOT DELETE ###
+
+# input = SummaryState(filename="green_grocers_sales.csv")
+# answer = graph.invoke(input)
+# print(answer["generation"]) 
