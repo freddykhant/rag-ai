@@ -1,9 +1,10 @@
-from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage
 from langgraph.graph import START, END, StateGraph
+from langchain_community.document_loaders import CSVLoader
+from langchain_chroma import Chroma
 from state import SummaryState
 from prompts import summary_prompt
-from vectordb import retriever
+from setup import retriever, text_splitter
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -16,10 +17,6 @@ CORS(app)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# LLM setup
-local_llm = "llama3.1:8b"
-llm = ChatOllama(model=local_llm, temperature=0)
 
 # ensure necessary directories exist
 folder_path = "db"
@@ -63,22 +60,42 @@ graph = builder.compile()
 def health():
     return jsonify({"status": "ok"})
 
-# Summary Route
-@app.route("/summarize", methods=["POST"])
-def summarize():
-    data = request.get_json()
-    filename = data.get("filename")
+# Upload Route
+@app.route("/upload", methods=["POST"])
+def upload():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+    
+    file_name = file.filename
+    save_file = os.path.join("files", file_name)
+    file.save(save_file) # saves file at the specified path
+    logger.info(f"File saved at {save_file}")
 
-    if not filename:
-        return jsonify({"error": "Missing filename"}), 400
+    try:
+        loader = CSVLoader(save_file)
+        docs = loader.load()
+        logger.info(f"Documents loaded: {len(docs)}")
 
-    input_state = SummaryState(filename=filename)
-    result = graph.invoke(input_state)
+        chunks = text_splitter.split_documents(docs)
+        logger.info(f"Chunks created: {len(chunks)}")   
 
-    return jsonify({"summary": result["generation"]})
+        vectorstore = Chroma.from_documents(
+            documents=chunks,
+            embedding=embeddings,
+            persist_directory=folder_path,
+        )
 
+        vectorstore.persist()
 
-
+        return jsonify({"status": "success", "filename": file_name, "doc_len": len(docs)}), 200
+    
+    except Exception as e:
+        logger.error(f"Error uploading file: {e}")
+        return jsonify({"error": "Failed to upload file"}), 500
 
 # Run Flask Server
 if __name__ == "__main__":
