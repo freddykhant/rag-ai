@@ -1,21 +1,22 @@
-BusinessName,Date,Product,Quantity,TotalAmount
-Coffee Heaven,2024-12-24,Espresso Machine,1,1299.00
-Coffee Heaven,2024-12-24,Coffee Beans - House Blend (1kg),6,180.00
-Coffee Heaven,2024-12-24,Reusable Coffee Cup,7,105.00
-Coffee Heaven,2024-12-24,French Press,6,180.00
-Coffee Heaven,2024-12-24,Cappuccino Frother,5,249.95
-Coffee Heaven,2024-12-24,Coffee Grinder,6,540.00
-Coffee Heaven,2024-12-24,Milk Frothing Jug,8,96.00
-Coffee Heaven,2024-12-24,Cold Brew Maker,6,180.00
-Coffee Heaven,2024-12-24,Double Wall Glass Cup,10,200.00
-Coffee Heaven,2024-12-24,Latte Art Pen,9,45.00
-Coffee Heaven,2024-12-24,Espresso Shot Glass,5,75.00
-Coffee Heaven,2024-12-24,Milk Pitcher,8,160.00
-Coffee Heaven,2024-12-24,Coffee Scale,1,65.00
-Coffee Heaven,2024-12-24,Tamper,9,270.00
-Coffee Heaven,2024-12-24,Pour-Over Dripper,1,30.00
-Coffee Heaven,2024-12-24,Cold Brew Concentrate (1L),10,350.00
-Coffee Heaven,2024-12-24,Mocha Pot,1,45.00
-Coffee Heaven,2024-12-24,Espresso Tamping Mat,3,60.00
-Coffee Heaven,2024-12-24,Vanilla Syrup (750ml),1,18.00
-Coffee Heaven,2024-12-24,Reusable Straw (Pack of 4),2,15.00
+# Coffee Heaven Sales (in AUD)
+Date,Product,Quantity Sold,Total Amount (AUD)
+2024-12-24,Espresso Machine,1,1299.00
+2024-12-24,Coffee Beans - House Blend (1kg),6,180.00
+2024-12-24,Reusable Coffee Cup,7,105.00
+2024-12-24,French Press,6,180.00
+2024-12-24,Cappuccino Frother,5,249.95
+2024-12-24,Coffee Grinder,6,540.00
+2024-12-24,Milk Frothing Jug,8,96.00
+2024-12-24,Cold Brew Maker,6,180.00
+2024-12-24,Double Wall Glass Cup,10,200.00
+2024-12-24,Latte Art Pen,9,45.00
+2024-12-24,Espresso Shot Glass,5,75.00
+2024-12-24,Milk Pitcher,8,160.00
+2024-12-24,Coffee Scale,1,65.00
+2024-12-24,Tamper,9,270.00
+2024-12-24,Pour-Over Dripper,1,30.00
+2024-12-24,Cold Brew Concentrate (1L),10,350.00
+2024-12-24,Mocha Pot,1,45.00
+2024-12-24,Espresso Tamping Mat,3,60.00
+2024-12-24,Vanilla Syrup (750ml),1,18.00
+2024-12-24,Reusable Straw (Pack of 4),2,15.00

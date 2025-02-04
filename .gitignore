@@ -1,2 +1,4 @@
-RAG/
+rag/
 __pycache__/
+db/
+files/
