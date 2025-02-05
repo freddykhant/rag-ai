@@ -81,6 +81,14 @@ export default function Home() {
                   accept=".csv"
                   onChange={handleFileChange}
                 />
+                <Button onClick={handleUpload} disabled={!file || isLoading}>
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Upload className="mr-2 h-4 w-4" />
+                  )}
+                  Upload
+                </Button>
               </div>
             </div>
           </div>
