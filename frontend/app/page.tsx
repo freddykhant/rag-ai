@@ -73,7 +73,7 @@ export default function Home() {
         <CardContent>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label className="font-bold" htmlFor="file">
+              <Label className="font-semibold" htmlFor="file">
                 Upload CSV
               </Label>
               <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function Home() {
                   onChange={handleFileChange}
                 />
                 <Button
-                  className="font-bold"
+                  className="font-semibold"
                   onClick={handleUpload}
                   disabled={!file || isLoading}
                 >
@@ -99,7 +99,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label className="font-bold" htmlFor="summary">
+              <Label className="font-semibold" htmlFor="summary">
                 Summary
               </Label>
               <Textarea
@@ -113,9 +113,19 @@ export default function Home() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={() => setSummary("")}>
+          <Button
+            className="font-semibold"
+            variant="outline"
+            onClick={() => setSummary("")}
+          >
             Clear Summary
           </Button>
+          {file && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <FileText className="mr-2 h-4 w-4" />
+              {file.name} ({(file.size / 1024).toFixed(2)} KB)
+            </div>
+          )}
         </CardFooter>
       </Card>
     </div>
