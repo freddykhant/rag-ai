@@ -70,6 +70,21 @@ export default function Home() {
           <CardTitle>Summary AI 🧠</CardTitle>
           <CardDescription>Upload a CSV file to get a summary</CardDescription>
         </CardHeader>
+        <CardContent>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="file">Upload CSV</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="file"
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
