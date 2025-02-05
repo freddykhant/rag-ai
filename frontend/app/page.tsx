@@ -73,7 +73,9 @@ export default function Home() {
         <CardContent>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="file">Upload CSV</Label>
+              <Label className="font-bold" htmlFor="file">
+                Upload CSV
+              </Label>
               <div className="flex items-center gap-2">
                 <Input
                   id="file"
@@ -81,7 +83,11 @@ export default function Home() {
                   accept=".csv"
                   onChange={handleFileChange}
                 />
-                <Button onClick={handleUpload} disabled={!file || isLoading}>
+                <Button
+                  className="font-bold"
+                  onClick={handleUpload}
+                  disabled={!file || isLoading}
+                >
                   {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
@@ -90,6 +96,11 @@ export default function Home() {
                   Upload
                 </Button>
               </div>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label className="font-bold" htmlFor="summary">
+                Summary
+              </Label>
             </div>
           </div>
         </CardContent>
