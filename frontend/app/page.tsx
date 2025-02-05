@@ -101,6 +101,13 @@ export default function Home() {
               <Label className="font-bold" htmlFor="summary">
                 Summary
               </Label>
+              <Textarea
+                id="summary"
+                placeholder="Your summary will appear here..."
+                value={summary}
+                readOnly
+                className="h-40"
+              />
             </div>
           </div>
         </CardContent>
