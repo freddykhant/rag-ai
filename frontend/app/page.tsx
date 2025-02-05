@@ -21,9 +21,14 @@ export default function Home() {
   const [summary, setSummary] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setFile(event.target.files[0]);
+    }
+
   return (
     <div>
       <p>hello world</p>
-    </div>
+    </div> 
   );
 }
