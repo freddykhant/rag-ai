@@ -78,6 +78,7 @@ export default function Home() {
               </Label>
               <div className="flex items-center gap-2">
                 <Input
+                  className="font-medium text-gray-600"
                   id="file"
                   type="file"
                   accept=".csv"
@@ -111,6 +112,11 @@ export default function Home() {
             </div>
           </div>
         </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline" onClick={() => setSummary("")}>
+            Clear Summary
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   );
