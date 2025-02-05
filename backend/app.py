@@ -55,8 +55,6 @@ def upload():
             persist_directory=folder_path,
         )
 
-        vectorstore.persist()
-
         return jsonify({"status": "success", "filename": file_name, "doc_len": len(docs)}), 200
     
     except Exception as e:
@@ -87,4 +85,4 @@ def summary():
 
 # Run Flask Server
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5050)
