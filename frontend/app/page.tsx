@@ -25,10 +25,47 @@ export default function Home() {
     if (event.target.files && event.target.files[0]) {
       setFile(event.target.files[0]);
     }
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const uploadResponse = await fetch("http://localhost:5050/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (uploadResponse.ok) {
+        const summaryResponse = await fetch("http://localhost:5050/summary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: file.name }),
+        });
+
+        if (summaryResponse.ok) {
+          const data = await summaryResponse.json();
+          setSummary(data.summary);
+        } else {
+          console.error("Failed to get summary");
+        }
+      } else {
+        console.error("Failed to upload file");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div>
       <p>hello world</p>
-    </div> 
+    </div>
   );
 }
