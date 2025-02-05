@@ -64,8 +64,13 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <p>hello world</p>
+    <div className="container mx-auto p-4">
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle>Summary AI 🧠</CardTitle>
+          <CardDescription>Upload a CSV file to get a summary</CardDescription>
+        </CardHeader>
+      </Card>
     </div>
   );
 }
