@@ -36,24 +36,27 @@ local_llm = "llama3.1:8b" # change model here
 ### Setup
 
 1. Clone the repository:
-   \`\`\`
+
+   ```
    git clone https://github.com/yourusername/summary-ai.git
    cd summary-ai
-   \`\`\`
+   ```
 
 2. Set up the backend:
-   \`\`\`
+
+   ```
    cd backend
    pip install -r requirements.txt
    python app.py
-   \`\`\`
+   ```
 
 3. Set up the frontend:
-   \`\`\`
+
+   ```
    cd frontend
    npm install
    npm run dev
-   \`\`\`
+   ```
 
 4. Open your browser and navigate to \`http://localhost:3000\`
 
